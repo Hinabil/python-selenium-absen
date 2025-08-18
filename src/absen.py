@@ -67,15 +67,15 @@ def absen(driver, nama):
         time.sleep(1)
 
 def main():
-    driver = webdriver.Chrome(options=chrome_options)
-    driver.set_window_size(1280, 800)
-    try:
-        for nama, username, password in users:
+    for nama, username, password in users:
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.set_window_size(1280, 800)
+        try:
             if login(driver, nama, username, password):
                 absen(driver, nama)
-    finally:
-        driver.quit()
-        print("[OK] Proses selesai dan browser ditutup.")
+        finally:
+            driver.quit()
+            print(f"[OK] Proses selesai dan browser ditutup untuk {nama}.")
 
 if __name__ == "__main__":
     main()
