@@ -19,7 +19,6 @@ jobs:
       run: |
         choco install googlechrome --no-progress
         choco install chromedriver --no-progress
-        refreshenv
 
     - name: Install dependencies
       run: |
