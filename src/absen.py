@@ -42,12 +42,12 @@ def login(driver, nama, username, password):
         time.sleep(2)
         take_screenshot(driver, f"{nama}_post_login.png")
         if "login" in driver.current_url.lower():
-            print(f"❌ Login gagal: {nama}")
+            print(f"[FAIL] Login gagal: {nama}")
             return False
-        print(f"✅ Login berhasil: {nama}")
+        print(f"[OK] Login berhasil: {nama}")
         return True
     except Exception as e:
-        print(f"❌ Login gagal: {nama} - {e}")
+        print(f"[FAIL] Login gagal: {nama} - {e}")
         return False
 
 def absen(driver, nama):
@@ -59,15 +59,15 @@ def absen(driver, nama):
         time.sleep(1)
         driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi')]").click()
         time.sleep(2)
-        print(f"🟢 Absen sukses: {nama}")
+        print(f"[ABSEN OK] Absen sukses: {nama}")
     except Exception as e:
-        print(f"🔴 Gagal absen: {nama} - {e}")
+        print(f"[ABSEN FAIL] Gagal absen: {nama} - {e}")
     finally:
         driver.get(URL_LOGOUT)
         time.sleep(1)
 
 def main():
-    driver = webdriver.Chrome(options=chrome_options)  # Hapus argumen service
+    driver = webdriver.Chrome(options=chrome_options)
     driver.set_window_size(1280, 800)
     try:
         for nama, username, password in users:
@@ -75,7 +75,7 @@ def main():
                 absen(driver, nama)
     finally:
         driver.quit()
-        print("✅ Proses selesai dan browser ditutup.")
+        print("[OK] Proses selesai dan browser ditutup.")
 
 if __name__ == "__main__":
     main()
