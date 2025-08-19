@@ -23,6 +23,7 @@ users = [
     ("Adrian Rezky Duana ","Rezky","Alish@275"),
     ("balqis athira djumayardi ","2406104030044","58674231"),
     ("Muhammad Aidil Fashsha","2404111010045","56378941"),
+    ("Muhammad Aulia Akbar Tamvan","2404104010002", "36789142"),
 ]
 
 # --- SETUP CHROME DRIVER ---
@@ -58,11 +59,14 @@ def absen(driver, nama):
         take_screenshot(driver, f"screenshots/{nama}_absen_page.png")
         driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi Kehadiran')]").click()
         time.sleep(1)
+        take_screenshot(driver, f"screenshots/{nama}_Konfirmasi_kehadiran.png")
         driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi')]").click()
         time.sleep(2)
         print(f"[ABSEN OK] Absen sukses: {nama}")
+        take_screenshot(driver, f"screenshots/{nama}_absen_sukses.png")
     except Exception as e:
         print(f"[ABSEN FAIL] Gagal absen: {nama} - {e}")
+        take_screenshot(driver, f"screenshots/{nama}_absen_failed.png")
     finally:
         driver.get(URL_LOGOUT)
         time.sleep(1)
