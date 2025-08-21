@@ -11,6 +11,12 @@ jobs:
   build:
     runs-on: windows-latest
 
+    env:
+      PGHOST: ${{ vars.NEON_HOST }}
+      PGDATABASE: ${{ vars.NEON_DB }}
+      PGUSER: ${{ vars.NEON_USER }}
+      PGPASSWORD: ${{ vars.NEON_PASSWORD }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2

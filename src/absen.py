@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import time
 from utils.screenshot import take_screenshot
+import psycopg2
 import os
 
 # --- KONFIGURASI ---
@@ -13,18 +14,6 @@ URL_LOGIN = "https://simkuliah.usk.ac.id/index.php/login"
 URL_ABSEN = "https://simkuliah.usk.ac.id/index.php/absensi"
 URL_LOGOUT = "https://simkuliah.usk.ac.id/index.php/login/logout"
 
-# --- DATA USER (ISI MANUAL DI SINI) ---
-users = [
-    ("Nabil Mahbub", "2404111010055", "15927386"),
-    ("Muhammad Afzalul Affan", "2404108010067", "48159367"),
-    ("Luna Selviana","2404106010001","luna181920"),
-    ("Naufal Aziz","2406102010046","24139758"),
-    ("Febrilia Ananda Putri","2404106010070","febri070"),
-    ("Adrian Rezky Duana ","Rezky","Alish@275"),
-    ("balqis athira djumayardi ","2406104030044","58674231"),
-    ("Muhammad Aidil Fashsha","2404111010045","56378941"),
-    ("Muhammad Aulia Akbar Tamvan","2404104010002", "36789142"),
-]
 
 # --- SETUP CHROME DRIVER ---
 # chrome_service = Service()  # Hapus baris ini
@@ -71,7 +60,29 @@ def absen(driver, nama):
         driver.get(URL_LOGOUT)
         time.sleep(1)
 
+def get_users_from_db():
+    # 🔒 Hanya koneksi saat diperlukan
+    try:
+        with psycopg2.connect(
+            user=os.environ["PGUSER"],
+            password=os.environ["PGPASSWORD"],
+            host=os.environ["PGHOST"],
+            database=os.environ["PGDATABASE"],
+            sslmode="require"
+        ) as conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT nama, username, password FROM "data absen"')
+                return cur.fetchall()
+    except Exception as e:
+        print(f"⚠️ Gagal koneksi ke database: {e}")
+        return []
+    
 def main():
+    users = get_users_from_db()
+    if not users:
+        print("⚠️ Tidak ada data user ditemukan.")
+        return
+    
     os.makedirs("screenshots", exist_ok=True)
     for nama, username, password in users:
         driver = webdriver.Chrome(options=chrome_options)
