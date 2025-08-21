@@ -72,7 +72,7 @@ def absen(driver, nama):
 
             # Tunggu tombol "Konfirmasi" pada notifikasi dan klik
             btn_notif = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "//button[contains(.,'Konfirmasi')]"))
+                EC.element_to_be_clickable((By.XPATH, "(//button[contains(.,'Konfirmasi')])[1]"))
             )
             btn_notif.click()
             time.sleep(2)
