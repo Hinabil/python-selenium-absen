@@ -30,6 +30,9 @@ jobs:
       run: |
         choco install googlechrome --no-progress
         choco install chromedriver --no-progress
+        
+    - name: Install PostgreSQL (latest) on Windows
+      run: choco install postgresql -y
 
     - name: Install dependencies
       run: |
