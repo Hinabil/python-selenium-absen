@@ -57,38 +57,13 @@ def absen(driver, nama):
         driver.get(URL_ABSEN)
         time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_absen_page.png")
-<<<<<<< HEAD
-
-        # Tunggu tombol benar-benar bisa diklik
-        try:
-            btn_konfirmasi = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "//button[contains(.,'Konfirmasi Kehadiran')]"))
-            )
-            btn_konfirmasi.click()
-            time.sleep(1)
-            take_screenshot(driver, f"screenshots/{nama}_Konfirmasi_kehadiran.png")
-
-            # Tunggu tombol "Konfirmasi" pada notifikasi dan klik
-            btn_notif = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "(//button[contains(.,'Konfirmasi')])[1]"))
-            )
-            btn_notif.click()
-            time.sleep(2)
-            print(f"[ABSEN OK] Absen sukses: {nama}")
-            take_screenshot(driver, f"screenshots/{nama}_absen_sukses.png")
-        except Exception as e:
-            print(f"[ABSEN SKIP] Tidak ada tombol Konfirmasi Kehadiran atau tidak bisa diklik untuk {nama}: {e}")
-            take_screenshot(driver, f"screenshots/{nama}_tidak_ada_tombol.png")
-
-=======
         driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi Kehadiran')]").click()
         time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_Konfirmasi_kehadiran.png")
-        driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi')]").click()
+        driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi')]")[1].click()
         time.sleep(2)
         print(f"[ABSEN OK] Absen sukses: {nama}")
         take_screenshot(driver, f"screenshots/{nama}_absen_sukses.png")
->>>>>>> a3ec5c406c7dc6cca061c5fb862df62e5b3c9f9a
     except Exception as e:
         print(f"[ABSEN FAIL] Gagal absen: {nama} - {e}")
         take_screenshot(driver, f"screenshots/{nama}_absen_failed.png")
