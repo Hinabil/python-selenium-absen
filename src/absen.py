@@ -2,8 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import time
 from utils.screenshot import take_screenshot
 import os
@@ -57,9 +55,9 @@ def login(driver, nama, username, password):
 def absen(driver, nama):
     try:
         driver.get(URL_ABSEN)
-        wait = WebDriverWait(driver, 15)
         time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_absen_page.png")
+<<<<<<< HEAD
 
         # Tunggu tombol benar-benar bisa diklik
         try:
@@ -82,6 +80,15 @@ def absen(driver, nama):
             print(f"[ABSEN SKIP] Tidak ada tombol Konfirmasi Kehadiran atau tidak bisa diklik untuk {nama}: {e}")
             take_screenshot(driver, f"screenshots/{nama}_tidak_ada_tombol.png")
 
+=======
+        driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi Kehadiran')]").click()
+        time.sleep(1)
+        take_screenshot(driver, f"screenshots/{nama}_Konfirmasi_kehadiran.png")
+        driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi')]").click()
+        time.sleep(2)
+        print(f"[ABSEN OK] Absen sukses: {nama}")
+        take_screenshot(driver, f"screenshots/{nama}_absen_sukses.png")
+>>>>>>> a3ec5c406c7dc6cca061c5fb862df62e5b3c9f9a
     except Exception as e:
         print(f"[ABSEN FAIL] Gagal absen: {nama} - {e}")
         take_screenshot(driver, f"screenshots/{nama}_absen_failed.png")
