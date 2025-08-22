@@ -49,7 +49,7 @@ def absen(driver, nama):
         driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi Kehadiran')]").click()
         time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_Konfirmasi_kehadiran.png")
-        driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi')]")[1].click()
+        driver.find_element(By.CSS_SELECTOR, "button.confirm").click()
         time.sleep(2)
         print(f"[ABSEN OK] Absen sukses: {nama}")
         take_screenshot(driver, f"screenshots/{nama}_absen_sukses.png")
