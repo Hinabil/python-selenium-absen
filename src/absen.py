@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import time
 from utils.screenshot import take_screenshot
-import psycopg2
+import pg8000
 import os
 
 # --- KONFIGURASI ---
@@ -63,7 +63,7 @@ def absen(driver, nama):
 def get_users_from_db():
     # 🔒 Hanya koneksi saat diperlukan
     try:
-        with psycopg2.connect(
+        with pg8000.connect(
             user=os.environ["PGUSER"],
             password=os.environ["PGPASSWORD"],
             host=os.environ["PGHOST"],
