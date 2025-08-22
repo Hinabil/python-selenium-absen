@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
+    environment: neon
     env:
       PGHOST: ${{ secrets.NEON_HOST }}
       PGDATABASE: ${{ secrets.NEON_DB }}
