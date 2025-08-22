@@ -68,7 +68,7 @@ def get_users_from_db():
             password=os.environ["PGPASSWORD"],
             host=os.environ["PGHOST"],
             database=os.environ["PGDATABASE"],
-            sslmode="require"
+            ssl_context=True
         ) as conn:
             with conn.cursor() as cur:
                 cur.execute('SELECT nama, username, password FROM "data absen"')
