@@ -12,10 +12,10 @@ jobs:
     runs-on: windows-latest
     environment: neon
     env:
-      PGHOST: ${{ secrets.NEON_HOST }}
-      PGDATABASE: ${{ secrets.NEON_DB }}
-      PGUSER: ${{ secrets.NEON_USER }}
-      PGPASSWORD: ${{ secrets.NEON_PASSWORD }}
+      PGHOST: ${{ vars.NEON_HOST }}
+      PGDATABASE: ${{ vars.NEON_DB }}
+      PGUSER: ${{ vars.NEON_USER }}
+      PGPASSWORD: ${{ vars.NEON_PASSWORD }}
 
     steps:
     - name: Checkout code
