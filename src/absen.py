@@ -61,7 +61,7 @@ def absen(driver, nama):
         time.sleep(1)
 
 def get_users_from_db():
-    # 🔒 Hanya koneksi saat diperlukan
+    #Hanya koneksi saat diperlukan
     try:
         with pg8000.connect(
             user=os.environ["PGUSER"],
@@ -74,13 +74,13 @@ def get_users_from_db():
                 cur.execute('SELECT nama, username, password FROM "data absen"')
                 return cur.fetchall()
     except Exception as e:
-        print(f"⚠️ Gagal koneksi ke database: {e}")
+        print(f"Gagal koneksi ke database: {e}")
         return []
     
 def main():
     users = get_users_from_db()
     if not users:
-        print("⚠️ Tidak ada data user ditemukan.")
+        print("Tidak ada data user ditemukan.")
         return
     
     os.makedirs("screenshots", exist_ok=True)
