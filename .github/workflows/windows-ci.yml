@@ -30,9 +30,12 @@ jobs:
       run: |
         choco install googlechrome --no-progress
         choco install chromedriver --no-progress
-        
+
     - name: Install PostgreSQL (latest) on Windows
-      run: choco install postgresql -y
+      run: |
+        choco install postgresql --no-progress -y
+        choco install postgresql-client --no-progress -y
+        setx PATH "C:\Program Files\PostgreSQL\15\bin;%PATH%"
 
     - name: Install dependencies
       run: |
