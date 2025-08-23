@@ -84,15 +84,18 @@ def main():
         return
     
     os.makedirs("screenshots", exist_ok=True)
-    for nama, username, password in users:
-        driver = webdriver.Chrome(options=chrome_options)
-        driver.set_window_size(1280, 800)
-        try:
-            if login(driver, nama, username, password):
-                absen(driver, nama)
-        finally:
-            driver.quit()
-            print(f"[OK] Proses selesai dan browser ditutup untuk {nama}.")
 
+    # 🚀 Buka 1 browser saja
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.set_window_size(1280, 800)
+
+    try:
+        for nama, username, password in users:
+            try:
+                if login(driver, nama, username, password):
+                    absen(driver, nama)
+    finally:
+        driver.quit()
+        print("[DONE] Semua proses selesai, browser ditutup.")
 if __name__ == "__main__":
     main()
