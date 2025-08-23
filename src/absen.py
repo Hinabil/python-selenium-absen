@@ -20,6 +20,7 @@ URL_LOGOUT = "https://simkuliah.usk.ac.id/index.php/login/logout"
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--headless=new")
 
 def login(driver, nama, username, password):
     try:
@@ -30,15 +31,15 @@ def login(driver, nama, username, password):
         driver.find_element(By.XPATH, "//input[@placeholder='Password']").send_keys(password)
         time.sleep(1)
         driver.find_element(By.XPATH, "//button[@type='submit']").click()
-        time.sleep(2)
+        time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_post_login.png")
         if "login" in driver.current_url.lower():
             print(f"[FAIL] Login gagal: {nama}")
             return False
         print(f"[OK] Login berhasil: {nama}")
         return True
-    except Exception as e:
-        print(f"[FAIL] Login gagal: {nama} - {e}")
+    except Exception:
+        print(f"[FAIL] Login gagal: {nama}")
         return False
 
 def absen(driver, nama):
@@ -50,11 +51,11 @@ def absen(driver, nama):
         time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_Konfirmasi_kehadiran.png")
         driver.find_element(By.CSS_SELECTOR, "button.confirm").click()
-        time.sleep(2)
+        time.sleep(1)
         print(f"[ABSEN OK] Absen sukses: {nama}")
         take_screenshot(driver, f"screenshots/{nama}_absen_sukses.png")
-    except Exception as e:
-        print(f"[ABSEN FAIL] Gagal absen: {nama} - {e}")
+    except Exception:
+        print(f"[ABSEN FAIL] Gagal absen: {nama}")
         take_screenshot(driver, f"screenshots/{nama}_absen_failed.png")
     finally:
         driver.get(URL_LOGOUT)
