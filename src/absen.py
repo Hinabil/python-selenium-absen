@@ -32,7 +32,6 @@ def login(driver, nama, username, password):
         time.sleep(1)
         driver.find_element(By.XPATH, "//button[@type='submit']").click()
         time.sleep(1)
-        take_screenshot(driver, f"screenshots/{nama}_post_login.png")
         if "login" in driver.current_url.lower():
             print(f"[FAIL] Login gagal: {nama}")
             return False
