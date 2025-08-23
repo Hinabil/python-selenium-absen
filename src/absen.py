@@ -88,10 +88,8 @@ def main():
     # 🚀 Buka 1 browser saja
     driver = webdriver.Chrome(options=chrome_options)
     driver.set_window_size(1280, 800)
-
     try:
         for nama, username, password in users:
-            try:
                 if login(driver, nama, username, password):
                     absen(driver, nama)
     finally:
