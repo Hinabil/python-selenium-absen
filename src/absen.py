@@ -87,10 +87,9 @@ def main():
     
     os.makedirs("screenshots", exist_ok=True)
 
-    # 🚀 Buka 1 browser saja
-    driver = webdriver.Chrome(options=chrome_options)
-    driver.set_window_size(1280, 800)
     try:
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.set_window_size(1280, 800)
         for nama, username, password in users:
                 if login(driver, nama, username, password):
                     absen(driver, nama)
