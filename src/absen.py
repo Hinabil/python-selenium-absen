@@ -86,11 +86,10 @@ def main():
         return
     
     os.makedirs("screenshots", exist_ok=True)
-
     try:
-        driver = webdriver.Chrome(options=chrome_options)
-        driver.set_window_size(1280, 800)
         for nama, username, password in users:
+                driver = webdriver.Chrome(options=chrome_options)
+                driver.set_window_size(1280, 800)
                 if login(driver, nama, username, password):
                     absen(driver, nama)
     finally:
