@@ -18,28 +18,46 @@ jobs:
       PGPASSWORD: ${{ vars.NEON_PASSWORD }}
 
     steps:
+    # 1️⃣ Checkout repo
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
+    # 2️⃣ Setup Python + cache pip otomatis
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.8'
+        python-version: '3.10'
+        cache: 'pip'   # otomatis cache berdasarkan requirements.txt
+
+    # 3️⃣ Cache Chrome & Chromedriver biar gak install ulang
+    - name: Cache Chrome
+      id: cache-chrome
+      uses: actions/cache@v4
+      with:
+        path: |
+          C:\Program Files\Google\Chrome
+          C:\Users\runneradmin\AppData\Local\Google\Chrome
+          C:\ProgramData\chocolatey\lib\chromedriver
+        key: chrome-${{ runner.os }}-114
 
     - name: Install Chrome & Chromedriver
+      if: steps.cache-chrome.outputs.cache-hit != 'true'
       run: |
-        choco install googlechrome --no-progress
-        choco install chromedriver --no-progress
+        choco install googlechrome -y --no-progress
+        choco install chromedriver -y --ignore-checksums --no-progress
 
+    # 4️⃣ Install dependencies (pip cache sudah aktif)
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    # 5️⃣ Run attendance bot
     - name: Run attendance script
       run: |
         python src/absen.py
 
+    # 6️⃣ Upload screenshot hasil
     - name: Upload screenshots as artifact
       uses: actions/upload-artifact@v4
       with:
