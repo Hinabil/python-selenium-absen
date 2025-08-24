@@ -102,8 +102,8 @@ def main():
     
     os.makedirs("screenshots", exist_ok=True)
     
-    # Gunakan max_workers=3 untuk membatasi jumlah thread parallel
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    # Gunakan max_workers untuk membatasi jumlah thread parallel
+    with ThreadPoolExecutor(max_workers=5) as executor:
         # Membuat future objects untuk setiap user
         future_to_user = {executor.submit(process_user, user): user for user in users}
         
