@@ -6,6 +6,7 @@ import time
 from utils.screenshot import take_screenshot
 import pg8000
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- KONFIGURASI ---
 CHROMEDRIVER_PATH = r"C:\chromedriver\chromedriver.exe"
@@ -79,6 +80,20 @@ def get_users_from_db():
         print(f"Gagal koneksi ke database: {e}")
         return []
     
+def process_user(user_data):
+    nama, username, password = user_data
+    driver = None
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.set_window_size(1280, 800)
+        if login(driver, nama, username, password):
+            absen(driver, nama)
+    except Exception as e:
+        print(f"[ERROR] Gagal memproses user {nama}: {e}")
+    finally:
+        if driver:
+            driver.quit()
+
 def main():
     users = get_users_from_db()
     if not users:
@@ -86,14 +101,21 @@ def main():
         return
     
     os.makedirs("screenshots", exist_ok=True)
-    try:
-        for nama, username, password in users:
-                driver = webdriver.Chrome(options=chrome_options)
-                driver.set_window_size(1280, 800)
-                if login(driver, nama, username, password):
-                    absen(driver, nama)
-    finally:
-        driver.quit()
-        print("[DONE] Semua proses selesai, browser ditutup.")
+    
+    # Gunakan max_workers=3 untuk membatasi jumlah thread parallel
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        # Membuat future objects untuk setiap user
+        future_to_user = {executor.submit(process_user, user): user for user in users}
+        
+        # Menunggu semua proses selesai
+        for future in as_completed(future_to_user):
+            user = future_to_user[future]
+            try:
+                future.result()
+            except Exception as e:
+                print(f"[ERROR] User {user[0]} generated an exception: {e}")
+
+    print("[DONE] Semua proses selesai.")
+
 if __name__ == "__main__":
     main()
