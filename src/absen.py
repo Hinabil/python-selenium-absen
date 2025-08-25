@@ -21,7 +21,6 @@ URL_LOGOUT = "https://simkuliah.usk.ac.id/index.php/login/logout"
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--headless=new")
 
 def login(driver, nama, username, password):
     try:
