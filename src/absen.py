@@ -55,8 +55,8 @@ def absen(driver, nama):
         print(f"[ABSEN OK] Absen sukses: {nama}")
         take_screenshot(driver, f"screenshots/{nama}_absen_sukses.png")
         time.sleep(1)
-    except Exception:
-        print(f"[ABSEN FAIL] Gagal absen: {nama}")
+    except Exception as e:
+        print(f"[ABSEN FAIL] Gagal absen: {nama} {e}")
         take_screenshot(driver, f"screenshots/{nama}_absen_failed.png")
         time.sleep(1)
     finally:
