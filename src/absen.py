@@ -6,6 +6,7 @@ import time
 from utils.screenshot import take_screenshot
 import pg8000
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- KONFIGURASI ---
 CHROMEDRIVER_PATH = r"C:\chromedriver\chromedriver.exe"
@@ -20,6 +21,7 @@ URL_LOGOUT = "https://simkuliah.usk.ac.id/index.php/login/logout"
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--headless=new")
 
 def login(driver, nama, username, password):
     try:
@@ -30,15 +32,14 @@ def login(driver, nama, username, password):
         driver.find_element(By.XPATH, "//input[@placeholder='Password']").send_keys(password)
         time.sleep(1)
         driver.find_element(By.XPATH, "//button[@type='submit']").click()
-        time.sleep(2)
-        take_screenshot(driver, f"screenshots/{nama}_post_login.png")
+        time.sleep(1)
         if "login" in driver.current_url.lower():
             print(f"[FAIL] Login gagal: {nama}")
             return False
         print(f"[OK] Login berhasil: {nama}")
         return True
-    except Exception as e:
-        print(f"[FAIL] Login gagal: {nama} - {e}")
+    except Exception:
+        print(f"[FAIL] Login gagal: {nama}")
         return False
 
 def absen(driver, nama):
@@ -46,16 +47,18 @@ def absen(driver, nama):
         driver.get(URL_ABSEN)
         time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_absen_page.png")
-        driver.find_element(By.XPATH, "//button[@id='btn-konfirmasi-kehadiran']").click()
+        driver.find_element(By.XPATH, "//button[contains(.,'Konfirmasi Kehadiran')]").click()
         time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_Konfirmasi_kehadiran.png")
         driver.find_element(By.CSS_SELECTOR, "button.confirm").click()
-        time.sleep(2)
+        time.sleep(1)
         print(f"[ABSEN OK] Absen sukses: {nama}")
         take_screenshot(driver, f"screenshots/{nama}_absen_sukses.png")
-    except Exception as e:
-        print(f"[ABSEN FAIL] Gagal absen: {nama} - {e}")
+        time.sleep(1)
+    except Exception:
+        print(f"[ABSEN FAIL] Gagal absen: {nama}")
         take_screenshot(driver, f"screenshots/{nama}_absen_failed.png")
+        time.sleep(1)
     finally:
         driver.get(URL_LOGOUT)
         time.sleep(1)
@@ -77,6 +80,20 @@ def get_users_from_db():
         print(f"Gagal koneksi ke database: {e}")
         return []
     
+def process_user(user_data):
+    nama, username, password = user_data
+    driver = None
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.set_window_size(1280, 800)
+        if login(driver, nama, username, password):
+            absen(driver, nama)
+    except Exception as e:
+        print(f"[ERROR] Gagal memproses user {nama}: {e}")
+    finally:
+        if driver:
+            driver.quit()
+
 def main():
     users = get_users_from_db()
     if not users:
@@ -84,15 +101,21 @@ def main():
         return
     
     os.makedirs("screenshots", exist_ok=True)
-    for nama, username, password in users:
-        driver = webdriver.Chrome(options=chrome_options)
-        driver.set_window_size(1280, 800)
-        try:
-            if login(driver, nama, username, password):
-                absen(driver, nama)
-        finally:
-            driver.quit()
-            print(f"[OK] Proses selesai dan browser ditutup untuk {nama}.")
+    
+    # Gunakan max_workers untuk membatasi jumlah thread parallel
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        # Membuat future objects untuk setiap user
+        future_to_user = {executor.submit(process_user, user): user for user in users}
+        
+        # Menunggu semua proses selesai
+        for future in as_completed(future_to_user):
+            user = future_to_user[future]
+            try:
+                future.result()
+            except Exception as e:
+                print(f"[ERROR] User {user[0]} generated an exception: {e}")
+
+    print("[DONE] Semua proses selesai.")
 
 if __name__ == "__main__":
     main()
