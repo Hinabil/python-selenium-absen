@@ -47,7 +47,7 @@ def absen(driver, nama):
         driver.get(URL_ABSEN)
         time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_absen_page.png")
-        driver.find_element(By.XPATH, "//button[starts-with(@id, 'konfirmasi-kehadiran')]").click()
+        driver.find_element(By.CSS_SELECTOR, "button[id^='konfirmasi-kehadiran']").click()
         time.sleep(1)
         take_screenshot(driver, f"screenshots/{nama}_Konfirmasi_kehadiran.png")
         driver.find_element(By.CSS_SELECTOR, "button.confirm").click()
